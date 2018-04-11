@@ -19,7 +19,6 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
  
- 
 class Block(pygame.sprite.Sprite):
     """ This class represents the ball that moves in a circle. """
  
