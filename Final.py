@@ -6,6 +6,8 @@ import pygame
 import random
 import math
 
+#bla bla bla
+
 # Define some colors
 BLACK = [0, 0, 0]
 WHITE = [255, 255, 255]
