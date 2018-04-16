@@ -105,6 +105,30 @@ def walls(): # draws the walls
     # Bottom Wall
     pygame.draw.polygon(screen, WHITE, [[0, 500], [750, 500], [750, 400], [700, 400], [650, 450], [100, 450], [50, 400], [0 , 400]])
  
+def user_interface():
+    #this is a guideline
+    #pygame.draw.rect(screen, BLACK, [0,0,999,2], 0)
+    #pygame.draw.rect(screen, BLUE, [250,41,9,9], 0)
+    #pygame.draw.rect(screen, BLUE, [250,451,9,9], 0)
+
+    
+    
+    #This draws the top health bar.
+    pygame.draw.rect(screen, BLACK, [100,5,550,35], 0)
+    #This draws the bottom health bar.
+    pygame.draw.rect(screen, BLACK, [100,458,550,35], 0)
+
+    #This will draw the top left point box.
+    pygame.draw.rect(screen, BLACK, [5,5,76,36], 0)
+    #This will draw the bottom right point box.
+    pygame.draw.rect(screen, BLACK, [665,458,76,35], 0)
+
+
+    #This will draw the top right sprite box
+    pygame.draw.rect(screen, BLACK, [680,5,60,53], 0)
+
+    #This will draw the bottom left box
+    pygame.draw.rect(screen,BLACK,[10,437,60,53],0)
     
 pygame.init()
 
@@ -180,6 +204,9 @@ while not done:
     
     # Walls
     walls()
+    
+    #UI_Display
+    user_interface()
 
     # Paddles
     player_one.draw(screen)
