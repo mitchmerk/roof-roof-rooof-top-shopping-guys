@@ -17,6 +17,18 @@ GREEN = [0, 255, 0]
 YELLOW = [255, 255, 0]
 
 # Classes
+#This creates the obstacle
+class Block(pygame.sprite.Sprite):
+    """ This class represents the block. """
+    def __init__(self, color):
+        # Call the parent class (Sprite) constructor
+        super().__init__()
+ 
+        self.image = pygame.Surface([50, 35])
+        self.image.fill(color)
+ 
+        self.rect = self.image.get_rect()
+
 class Paddle(): # paddle class
     def __init__(self, x_pos, y_pos, color):
         # --- Class Attributes ---
@@ -96,7 +108,21 @@ class Ball(): # ball class
 
        # elif self.pos[0] < self.size:
             #self.pos[0]
-
+#This shows the obstacles on screen.
+all_sprites_list = pygame.sprite.Group()
+block_list = pygame.sprite.Group()
+#This controls how many and where the obstacles will spawn.
+for i in range(3):
+    # This represents a block
+    block = Block(GREEN)
+ 
+    # Set a random location for the block
+    block.rect.x = random.randrange(450)
+    block.rect.y = random.randrange(550)
+ 
+    # Add the block to the list of objects
+    block_list.add(block)
+    all_sprites_list.add(block)
         
 
 def walls(): # draws the walls
@@ -201,6 +227,8 @@ while not done:
  
     # --- Drawing code should go here
     screen.fill(BLACK)
+    #This will add the random obstacles
+    all_sprites_list.draw(screen)
     
     # Walls
     walls()
