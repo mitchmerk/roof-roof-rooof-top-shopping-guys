@@ -6,8 +6,6 @@ import pygame
 import random
 import math
 
-#bla bla bla
-
 # Define some colors
 BLACK = [0, 0, 0]
 WHITE = [255, 255, 255]
@@ -16,146 +14,154 @@ BLUE = [0, 0, 255]
 GREEN = [0, 255, 0]
 YELLOW = [255, 255, 0]
 
+# Width and Height of the boundaries
+arena_height = 500
+arena_width = 750
+
 # Classes
-#This creates the obstacle
-class Block(pygame.sprite.Sprite):
-    """ This class represents the block. """
-    def __init__(self, color):
+class Paddle(pygame.sprite.Sprite): # paddle class
+    # Constructor function
+    def __init__(self, x_pos, y_pos, color):
+        # Call the parent's constructor
+        super().__init__()
+ 
+        self.width = 15
+        self.height = 50
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(color)
+ 
+        # Make our top-left corner the passed-in location.
+        self.rect = self.image.get_rect()
+        self.screenheight = pygame.display.get_surface().get_height()
+        self.screenwidth = pygame.display.get_surface().get_width()
+ 
+        self.rect.x = x_pos
+        self.rect.y = y_pos
+
+        self.speed = 3
+ 
+    # Update the player
+    def update(self, change_dir):        
+        self.change = change_dir
+        print(self.change)
+        vert_axis_pos = self.change
+        # Move y according to the axis. We multiply by 15 to speed up the movement.
+        self.rect.y = int(self.rect.y + vert_axis_pos * 3)
+ 
+        # Makes sure the paddle is contained within the borders of the arena
+        if self.rect.y > 350:
+            self.rect.y = 350
+        elif self.rect.y < 101:
+            self.rect.y = 101
+
+class Ball(pygame.sprite.Sprite): # ball class
+    # Constructor. Pass in the color of the block, and its x and y position
+    def __init__(self):
         # Call the parent class (Sprite) constructor
         super().__init__()
  
-        self.image = pygame.Surface([50, 35])
-        self.image.fill(color)
+        # Create the image of the ball
+        self.image = pygame.Surface([10, 10])
  
+        # Color the ball
+        self.image.fill(YELLOW)
+ 
+        # Get a rectangle object that shows where our image is
         self.rect = self.image.get_rect()
+ 
+        # Get attributes for the height/width of the screen
+        self.screenheight = pygame.display.get_surface().get_height()
+        self.screenwidth = pygame.display.get_surface().get_width()
+ 
+        # Speed in pixels per cycle
+        self.speed = 0
+ 
+        # Floating point representation of where the ball is
+        self.x = 0
+        self.y = 0
+ 
+        # Direction of ball in degrees
+        self.direction = 0
+ 
+        # Height and width of the ball
+        self.width = 7
+        self.height = 7
+ 
+        # Set the initial ball speed and position
+        self.reset()
+ 
+    def reset(self):
+        self.x = 375
+        self.y = 250
+        self.speed= 3.0
+ 
+        # Direction of ball (in degrees)
+        self.direction = random.randrange(-45,45)
+ 
+        # Flip a 'coin'
+        if random.randrange(2) == 0 :
+            # Reverse ball direction, let the other guy get it first
+            self.direction += 90
+            self.y = 50
+ 
+    # This function will bounce the ball off a horizontal surface (not a vertical one)
+    def bounce(self,diff):
+        self.direction = (90 - self.direction) % 360
+        self.direction -= diff
+ 
+        # Speed the ball up
+        #self.speed *= 1.1
+ 
+    # Update the position of the ball
+    def update(self):
+        # Sine and Cosine work in degrees, so we have to convert them
+        direction_radians = math.radians(self.direction)
+ 
+        # Change the position (x and y) according to the speed and direction
+        self.x += self.speed * math.sin(direction_radians)
+        self.y -= self.speed * math.cos(direction_radians)
+ 
+        if self.y < 0:
+            self.reset()
+ 
+        if self.y > 600:
+            self.reset()
+ 
+        # Move the image to where our x and y are
+        self.rect.x = self.x
+        self.rect.y = self.y
+ 
+        # Do we bounce off the left of the screen?
+        #if self.x <= 0:
+         #   self.direction = (360-self.direction) % 360
+ 
+        # Do we bounce of the right side of the screen?
+        #if self.x > self.screenwidth - self.width:
+         #   self.direction = (360-self.direction) % 360
 
-class Paddle(): # paddle class
-    def __init__(self, x_pos, y_pos, color):
-        # --- Class Attributes ---
-
-        # Height and Width
-        height = 50
-        width = 15
-        
-        # Position
-        self.pos = [x_pos, y_pos] # X/Y Position
-
-        # Size
-        self.size = [width, height] # Height/Width
-
-        # Position Change (Movement)
-        self.change = 0 # Change in Y position
-
-        # Color
-        self.col = color # Color
-
-    def draw(self, screen): # draw method to draw the paddle
-        pygame.draw.rect(screen, self.col, [self.pos, self.size])
-
-    def move(self): # move method (moves paddles up and down)
-        self.pos[1] += self.change
-        if self.pos[1] > 350:
-            self.pos[1] = 350
-        elif self.pos[1] < 101:
-            self.pos[1] = 101
-
-class Ball(): # ball class
-    def __init__(self, x_pos, y_pos, size, angle):
-        # --- Class Attributes ---
-        # Width and Height of the boundaries
-        height = 500
-        width = 750
-        
-        # Set the initial X/Y change
-        x_change = 1
-        y_change = 1
-        chooser = random.randint(0, 1)
-        if x_change == 0:
-            if chooser == 0:
-                x_change = 1
-            elif chooser == 1:
-                x_change = -1
-        if y_change == 0:
-            if chooser == 0:
-                y_change = 1
-            elif chooser == 1:
-                y_change = -1
-        
-        # Position
-        self.pos = [x_pos, y_pos] # X/Y Position
-
-        # Size
-        self.size = size # Height/Width
-
-        # Angle
-        self.angle = angle # Angle
-
-        # Speed
-        self.speed = 2.5 # Speed
-
-    def draw(self, screen): # draw method to draw the paddle
-        pygame.draw.circle(screen, YELLOW, (int(self.pos[0]), int(self.pos[1])), self.size)
-
-    def move(self): # move method (moves paddles up and down)
-        self.pos[0] += math.sin(self.angle) * self.speed
-        self.pos[1] += math.cos(self.angle) * self.speed
+        # Do we bounce of the top of the screen?
+        #if self.y <= 0:
+          #  self.direction = (360 - self.direction) % 360
             
-    #def bounce(self): # bounces the ball off the walls/paddles
-        # Paddle Bouncing
-        #if self.pos[0] > width - self.size:
-           # self.x = 2 * (width - self.size) - self.pos[0]
-           # self.angle = - self.angle
-
-       # elif self.pos[0] < self.size:
-            #self.pos[0]
-#This shows the obstacles on screen.
-all_sprites_list = pygame.sprite.Group()
-block_list = pygame.sprite.Group()
-#This controls how many and where the obstacles will spawn.
-for i in range(3):
-    # This represents a block
-    block = Block(GREEN)
- 
-    # Set a random location for the block
-    block.rect.x = random.randrange(450)
-    block.rect.y = random.randrange(550)
- 
-    # Add the block to the list of objects
-    block_list.add(block)
-    all_sprites_list.add(block)
+        # Do we bounce of the bottom of the screen?
+        #if self.y > self.height - self.screenheight:
+         #   self.direction = (360 - self.direction) % 360
+            
+class Wall(pygame.sprite.Sprite): # draws the walls
+    # Constructor function
+    def __init__(self):
+        # Call the parent's constructor
+        super().__init__()
         
+    def draw(self, screen):
+        # Top Wall
+        pygame.draw.polygon(screen, WHITE, [[0, 0], [750, 0], [750, 100], [700, 100], [650, 50], [100, 50], [50, 100], [0 , 100]])
+        # Bottom Wall
+        pygame.draw.polygon(screen, WHITE, [[0, 500], [750, 500], [750, 400], [700, 400], [650, 450], [100, 450], [50, 400], [0 , 400]])
 
-def walls(): # draws the walls
-    # Top Wall
-    pygame.draw.polygon(screen, WHITE, [[0, 0], [750, 0], [750, 100], [700, 100], [650, 50], [100, 50], [50, 100], [0 , 100]])
-    # Bottom Wall
-    pygame.draw.polygon(screen, WHITE, [[0, 500], [750, 500], [750, 400], [700, 400], [650, 450], [100, 450], [50, 400], [0 , 400]])
- 
-def user_interface():
-    #this is a guideline
-    #pygame.draw.rect(screen, BLACK, [0,0,999,2], 0)
-    #pygame.draw.rect(screen, BLUE, [250,41,9,9], 0)
-    #pygame.draw.rect(screen, BLUE, [250,451,9,9], 0)
+score1 = 0
+score2 = 0
 
-    
-    
-    #This draws the top health bar.
-    pygame.draw.rect(screen, BLACK, [100,5,550,35], 0)
-    #This draws the bottom health bar.
-    pygame.draw.rect(screen, BLACK, [100,458,550,35], 0)
-
-    #This will draw the top left point box.
-    pygame.draw.rect(screen, BLACK, [5,5,76,36], 0)
-    #This will draw the bottom right point box.
-    pygame.draw.rect(screen, BLACK, [665,458,76,35], 0)
-
-
-    #This will draw the top right sprite box
-    pygame.draw.rect(screen, BLACK, [680,5,60,53], 0)
-
-    #This will draw the bottom left box
-    pygame.draw.rect(screen,BLACK,[10,437,60,53],0)
-    
 pygame.init()
 
 # Set the width and height of the screen [width, height]
@@ -165,59 +171,70 @@ screen = pygame.display.set_mode(size)
 pygame.display.set_caption("PONG+PLUS")
  
 # Loop until the user clicks the close button.
+exit_game = False
 done = False
  
 # Used to manage how fast the screen updates
 clock = pygame.time.Clock()
 
+# Instances of the Ball class
+game_ball = Ball()
+
+balls = pygame.sprite.Group()
+balls.add(game_ball)
+
 # Instances of the Paddle class
 player_one = Paddle(35, 225, BLUE)
 player_two = Paddle(700, 225, RED)
-direction = random.uniform(0, math.pi * 2)
-game_ball = Ball(375, 250, 7, direction)
 
-# Paddle Speed
-speed = 2
+movingsprites = pygame.sprite.Group()
+movingsprites.add(player_one)
+movingsprites.add(player_two)
+movingsprites.add(game_ball)
+
+player_one_change = 0
+player_two_change = 0
+
+# Instances of the Wall class
+border = Wall()
+
 
 # -------- Main Program Loop -----------
-while not done:
+while not exit_game:
     # --- Main event loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            done = True
+            exit_program = True
 
         # PLAYER ONE CONTROLS
         # Set the speed based on the key pressed
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:
-                player_one.change = (speed * -1)
+                player_one_change = -1
             elif event.key == pygame.K_s:
-                player_one.change = speed
+                player_one_change = 1
  
         # Reset speed when key goes up
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_w:
-                player_one.change = 0
+               player_one_change = 0
             elif event.key == pygame.K_s:
-                player_one.change = 0
-
-
+                player_one_change = 0
+                
         # PLAYER TWO CONTROLS
         # Set the speed based on the key pressed
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                player_two.change = (speed * -1)
+                player_two_change = -1
             elif event.key == pygame.K_DOWN:
-                player_two.change = speed
+                player_two_change = 1
  
         # Reset speed when key goes up
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_UP:
-                player_two.change = 0
+                player_two_change = 0
             elif event.key == pygame.K_DOWN:
-                player_two.change = 0
-                
-    # --- Game logic should go here
+                player_two_change = 0
  
     # --- Screen-clearing code goes here
     screen.fill(WHITE)
@@ -225,28 +242,35 @@ while not done:
     # Here, we clear the screen to white. Don't put other drawing commands
     # above this, or they will be erased with this command.
  
-    # --- Drawing code should go here
+    # Set the screen's background
     screen.fill(BLACK)
-    #This will add the random obstacles
-    all_sprites_list.draw(screen)
-    
-    # Walls
-    walls()
-    
-    #UI_Display
-    user_interface()
 
-    # Paddles
-    player_one.draw(screen)
-    player_one.move()
+    border.draw(screen)
 
-    player_two.draw(screen)
-    player_two.move()
+    if not done:
+        # Update the player and ball positions
+        player_one.update(player_one_change)
+        player_two.update(player_two_change)
+        game_ball.update()
+
+
+    # See if the ball hits the player one paddle
+    if pygame.sprite.spritecollide(player_one, balls, False):
+        diff = (player_one.rect.x + player_one.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+ 
+        game_ball.bounce(diff)
+        score1 += 1
+ 
+    # See if the ball hits the player two paddle
+    if pygame.sprite.spritecollide(player_two, balls, False):
+        diff = (player_two.rect.x + player_two.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+ 
+        game_ball.bounce(diff)
+        score2 += 1
+ 
     
-    # Ball
-    game_ball.draw(screen)
-    game_ball.move()
-    
+    # Draw Everything
+    movingsprites.draw(screen)
     
     # --- Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
