@@ -159,6 +159,75 @@ class Wall(pygame.sprite.Sprite): # draws the walls
         # Bottom Wall
         pygame.draw.polygon(screen, WHITE, [[0, 500], [750, 500], [750, 400], [700, 400], [650, 450], [100, 450], [50, 400], [0 , 400]])
 
+def user_interface():
+    #this is a guideline
+    #pygame.draw.rect(screen, BLACK, [0,0,999,2], 0)
+    #pygame.draw.rect(screen, BLUE, [250,41,9,9], 0)
+    #pygame.draw.rect(screen, BLUE, [250,451,9,9], 0)
+
+
+    #This draws the top health bar.
+    pygame.draw.rect(screen, RED, [97,3,556,40], 0)
+    pygame.draw.rect(screen, BLACK, [100,5,550,35], 0)
+
+    
+    #This draws the bottom health bar.
+    pygame.draw.rect(screen, BLUE, [97,456,556,39], 0)
+    pygame.draw.rect(screen, BLACK, [100,458,550,35], 0)
+
+    #==========^^^^Not changeable^^^=====================
+
+
+    
+
+    
+
+    #This will draw the health bar for blue.
+    pygame.draw.rect(screen, GREEN, [100,458,550,35], 0)
+
+
+    #This will draw the health bar for red.
+    pygame.draw.rect(screen, GREEN, [100,5,550,35], 0)
+
+
+
+    
+
+    #==========^^^^Not changeable^^^=====================
+    
+    #This will draw the text for player 1. (BLUE)
+    font = pygame.font.SysFont('Calibri', 25, True, False)
+    text = font.render("PLAYER 1", True, WHITE)
+    screen.blit(text, [340, 465])
+
+
+    #This will draw the text for player 2. (RED)
+    text = font.render("PLAYER 2", True, WHITE)
+    screen.blit(text, [340, 10])
+
+    
+    #This will draw the top left point box.
+    pygame.draw.rect(screen, RED, [2,3,82,40], 0)
+    pygame.draw.rect(screen, BLACK, [5,5,76,36], 0)
+
+    
+    #This will draw the bottom right point box.
+    pygame.draw.rect(screen, BLUE, [663,456,82,39], 0)
+    pygame.draw.rect(screen, BLACK, [665,458,76,35], 0)
+
+
+    #This will draw the top right sprite box
+    pygame.draw.rect(screen, RED, [677,2,66,59], 0)
+    pygame.draw.rect(screen, BLACK, [680,5,60,53], 0)
+
+    #This will draw the bottom left sprite box
+    pygame.draw.rect(screen,BLUE,[8,435,65,58],0)
+    pygame.draw.rect(screen,BLACK,[10,437,60,53],0)
+
+
+        
+        
+        
 score1 = 0
 score2 = 0
 
@@ -271,6 +340,9 @@ while not exit_game:
     
     # Draw Everything
     movingsprites.draw(screen)
+    
+    # UI_Display
+    user_interface()
     
     # --- Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
