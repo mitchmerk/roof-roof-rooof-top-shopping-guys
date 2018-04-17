@@ -19,6 +19,20 @@ arena_height = 500
 arena_width = 750
 
 # Classes
+
+
+class Block(pygame.sprite.Sprite):
+    """ This class represents the block. """
+    def __init__(self, color):
+        # Call the parent class (Sprite) constructor
+        super().__init__()
+
+        #This randomizes the size of the Obstacle
+        randint = random.randint(10, 90)
+        self.image = pygame.Surface([randint, randint])
+        self.image.fill(color)
+        self.rect = self.image.get_rect()
+        
 class Paddle(pygame.sprite.Sprite): # paddle class
     # Constructor function
     def __init__(self, x_pos, y_pos, color):
@@ -230,6 +244,20 @@ def user_interface():
         
 score1 = 0
 score2 = 0
+#This draws the obstacles.
+all_sprites_list = pygame.sprite.Group()
+block_list = pygame.sprite.Group()
+for i in range(3):
+    # This represents a block
+    block = Block(GREEN)
+    # Set a random location for the block
+    block.rect.x = random.randrange(475)
+    block.rect.y = random.randrange(550)
+    # Add the block to the list of objects
+    block_list.add(block)
+    all_sprites_list.add(block)
+pygame.init()
+
 
 pygame.init()
 
@@ -340,6 +368,7 @@ while not exit_game:
     
     # Draw Everything
     movingsprites.draw(screen)
+    all_sprites_list.draw(screen)
     
     # UI_Display
     user_interface()
