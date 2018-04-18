@@ -237,6 +237,21 @@ def user_interface():
     #This will draw the bottom left sprite box
     pygame.draw.rect(screen,BLUE,[8,435,65,58],0)
     pygame.draw.rect(screen,BLACK,[10,437,60,53],0)
+    
+    
+    #This will be for the score for player 2 (red).
+    point = score1
+    point1 = str(point)
+    font = pygame.font.SysFont('Calibri', 25, True, False)
+    text = font.render(point1, True, WHITE)
+    screen.blit(text, [30, 10])
+    
+    #This will be for the score for player 1 (blue).
+    point = score2
+    point2 = str(point)
+    font = pygame.font.SysFont('Calibri', 25, True, False)
+    text = font.render(point2, True, WHITE)
+    screen.blit(text, [695, 465])
 
 
         
@@ -364,6 +379,26 @@ while not exit_game:
  
         game_ball.bounce(diff)
         score2 += 1
+    
+    # If the ball goes beyond the screen on the right.
+    if game_ball.x > 725 and game_ball.y > 100 and game_ball.y < 380:
+        score2 += 1
+        
+        game_ball.x = 400
+        game_ball.y = 200
+
+    #If the ball goes beyond the screen on the left. 
+    if game_ball.x < 5 and game_ball.y > 100 and game_ball.y < 380:
+        score1 += 1
+        border.self_health -= 30
+        self.reset()
+        
+        #game_ball.x = 400
+        #game_ball.y = 200
+        
+    #if score1 > 10:
+        #break
+ 
  
     
     # Draw Everything
