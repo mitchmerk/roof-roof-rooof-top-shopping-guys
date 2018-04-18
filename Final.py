@@ -399,6 +399,14 @@ while not exit_game:
         border.self_health -= 30
         game_ball.reset()
         
+    for block in block_list:
+        if pygame.sprite.spritecollide(block, balls, False):    
+            block_list.remove(block)
+            all_sprites_list.remove(block)
+        if pygame.sprite.spritecollide(block, balls, False):
+            diff = (player_two.rect.x + player_two.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+            game_ball.bounce(diff)
+        
     #This will change the color of the health bar.
     if border.health1 < 250:
         border.healthcolor_change()
