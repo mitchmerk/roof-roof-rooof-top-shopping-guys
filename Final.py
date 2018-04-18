@@ -372,18 +372,14 @@ while not exit_game:
     # If the ball goes beyond the screen on the right.
     if game_ball.x > 725 and game_ball.y > 100 and game_ball.y < 380:
         score2 += 1
-        
-        game_ball.x = 400
-        game_ball.y = 200
+        border.self_health -= 30
+        game_ball.reset
 
     #If the ball goes beyond the screen on the left. 
     if game_ball.x < 5 and game_ball.y > 100 and game_ball.y < 380:
         score1 += 1
         border.self_health -= 30
-        self.reset()
-        
-        #game_ball.x = 400
-        #game_ball.y = 200
+        game_ball.reset()
         
     #if score1 > 10:
         #break
