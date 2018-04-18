@@ -394,9 +394,6 @@ while not exit_game:
     movingsprites.draw(screen)
     all_sprites_list.draw(screen)
     
-    # UI_Display
-    user_interface()
-    
     # --- Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
  
