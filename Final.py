@@ -161,7 +161,26 @@ class Ball(pygame.sprite.Sprite): # ball class
         #if self.y > self.height - self.screenheight:
          #   self.direction = (360 - self.direction) % 360
             
-def draw(self, screen):
+class Wall(pygame.sprite.Sprite): # draws the walls
+    # Constructor function
+    def __init__(self):
+        # Call the parent's constructor
+        super().__init__()
+
+        #These values set how much health the players have.
+        health_size1 = 550
+        self.health_size2 = 550
+
+        self.health1 = health_size1
+
+    def health_change():
+            
+            #These are used to deturmin what color the health bar is.
+            self.change_health1 = 0
+
+            self.change_health2 = 0
+        
+    def draw(self, screen):
         # Top Wall
         pygame.draw.polygon(screen, WHITE, [[0, 0], [750, 0], [750, 100], [700, 100], [650, 50], [100, 50], [50, 100], [0 , 100]])
         # Bottom Wall
