@@ -166,19 +166,37 @@ class Wall(pygame.sprite.Sprite): # draws the walls
     def __init__(self):
         # Call the parent's constructor
         super().__init__()
-
         #These values set how much health the players have.
-        health_size1 = 550
-        self.health_size2 = 550
+        self.health1 = 550
+        
+        self.health2= 550
 
-        self.health1 = health_size1
+        #These values change the health values.
+        self.health_damage = 0
 
-    def health_change():
-            
-            #These are used to deturmin what color the health bar is.
-            self.change_health1 = 0
+        #These values assign the health to the health bar.
+        #self.haelth_change = 
 
-            self.change_health2 = 0
+        #self.health1 = self.health_change
+
+        #This assigns the color.
+        self.color = GREEN
+
+    def healthcolor_change(self):
+        
+        self.color = YELLOW
+        
+    #def healthcolor_change2(self):
+
+        #self.color = RED
+        
+    def health_change(self,num):
+        #These are used to deturmin what color the health bar is.
+        self.change_health1 = 0
+        
+        self.health1 -= num
+        
+        #self.change_health2 = 0
         
     def draw(self, screen):
         # Top Wall
@@ -381,9 +399,15 @@ while not exit_game:
         border.self_health -= 30
         game_ball.reset()
         
-    #if score1 > 10:
-        #break
- 
+    #This will change the color of the health bar.
+    if border.health1 < 250:
+        border.healthcolor_change()
+
+    if border.health1 < 150:
+        border.healthcolor_change2()
+
+    if border.health1 <= 0:
+        break
  
     
     # Draw Everything
