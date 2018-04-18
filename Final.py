@@ -161,101 +161,71 @@ class Ball(pygame.sprite.Sprite): # ball class
         #if self.y > self.height - self.screenheight:
          #   self.direction = (360 - self.direction) % 360
             
-class Wall(pygame.sprite.Sprite): # draws the walls
-    # Constructor function
-    def __init__(self):
-        # Call the parent's constructor
-        super().__init__()
-        
-    def draw(self, screen):
+def draw(self, screen):
         # Top Wall
         pygame.draw.polygon(screen, WHITE, [[0, 0], [750, 0], [750, 100], [700, 100], [650, 50], [100, 50], [50, 100], [0 , 100]])
         # Bottom Wall
         pygame.draw.polygon(screen, WHITE, [[0, 500], [750, 500], [750, 400], [700, 400], [650, 450], [100, 450], [50, 400], [0 , 400]])
 
-def user_interface():
-    #this is a guideline
-    #pygame.draw.rect(screen, BLACK, [0,0,999,2], 0)
-    #pygame.draw.rect(screen, BLUE, [250,41,9,9], 0)
-    #pygame.draw.rect(screen, BLUE, [250,451,9,9], 0)
+        #This draws the top health bar.
+        pygame.draw.rect(screen, RED, [97,3,556,40], 0)
+        pygame.draw.rect(screen, BLACK, [100,5,550,35], 0)
+
+        #This draws the bottom health bar.
+        pygame.draw.rect(screen, BLUE, [97,456,556,39], 0)
+        pygame.draw.rect(screen, BLACK, [100,458,550,35], 0)
+
+        #==========vvvvHealth Barsvvvv=====================
+
+        #This will draw the health bar for blue.
+        pygame.draw.rect(screen, GREEN, [100,458,self.health1,35], 0)
 
 
-    #This draws the top health bar.
-    pygame.draw.rect(screen, RED, [97,3,556,40], 0)
-    pygame.draw.rect(screen, BLACK, [100,5,550,35], 0)
+        #This will draw the health bar for red.
+        pygame.draw.rect(screen, GREEN, [100,5,550,35], 0)
 
-    
-    #This draws the bottom health bar.
-    pygame.draw.rect(screen, BLUE, [97,456,556,39], 0)
-    pygame.draw.rect(screen, BLACK, [100,458,550,35], 0)
-
-    #==========^^^^Not changeable^^^=====================
-
-
-    
-
-    
-
-    #This will draw the health bar for blue.
-    pygame.draw.rect(screen, GREEN, [100,458,550,35], 0)
-
-
-    #This will draw the health bar for red.
-    pygame.draw.rect(screen, GREEN, [100,5,550,35], 0)
-
-
-
-    
-
-    #==========^^^^Not changeable^^^=====================
-    
-    #This will draw the text for player 1. (BLUE)
-    font = pygame.font.SysFont('Calibri', 25, True, False)
-    text = font.render("PLAYER 1", True, WHITE)
-    screen.blit(text, [340, 465])
-
-
-    #This will draw the text for player 2. (RED)
-    text = font.render("PLAYER 2", True, WHITE)
-    screen.blit(text, [340, 10])
-
-    
-    #This will draw the top left point box.
-    pygame.draw.rect(screen, RED, [2,3,82,40], 0)
-    pygame.draw.rect(screen, BLACK, [5,5,76,36], 0)
-
-    
-    #This will draw the bottom right point box.
-    pygame.draw.rect(screen, BLUE, [663,456,82,39], 0)
-    pygame.draw.rect(screen, BLACK, [665,458,76,35], 0)
-
-
-    #This will draw the top right sprite box
-    pygame.draw.rect(screen, RED, [677,2,66,59], 0)
-    pygame.draw.rect(screen, BLACK, [680,5,60,53], 0)
-
-    #This will draw the bottom left sprite box
-    pygame.draw.rect(screen,BLUE,[8,435,65,58],0)
-    pygame.draw.rect(screen,BLACK,[10,437,60,53],0)
-    
-    
-    #This will be for the score for player 2 (red).
-    point = score1
-    point1 = str(point)
-    font = pygame.font.SysFont('Calibri', 25, True, False)
-    text = font.render(point1, True, WHITE)
-    screen.blit(text, [30, 10])
-    
-    #This will be for the score for player 1 (blue).
-    point = score2
-    point2 = str(point)
-    font = pygame.font.SysFont('Calibri', 25, True, False)
-    text = font.render(point2, True, WHITE)
-    screen.blit(text, [695, 465])
-
-
+        #==========^^^^Health Bars^^^^=====================            
         
         
+        #This will draw the text for player 1. (BLUE)
+        font = pygame.font.SysFont('Calibri', 25, True, False)
+        text = font.render("PLAYER 1", True, WHITE)
+        screen.blit(text, [340, 465])
+        
+        #This will draw the text for player 2. (RED)
+        text = font.render("PLAYER 2", True, WHITE)
+        screen.blit(text, [340, 10])
+
+        #This will draw the top left point box.
+        pygame.draw.rect(screen, RED, [2,3,82,40], 0)
+        pygame.draw.rect(screen, BLACK, [5,5,76,36], 0)
+
+        #This will draw the bottom right point box.
+        pygame.draw.rect(screen, BLUE, [663,456,82,39], 0)
+        pygame.draw.rect(screen, BLACK, [665,458,76,35], 0)
+
+        #This will draw the top right sprite box
+        pygame.draw.rect(screen, RED, [677,2,66,59], 0)
+        pygame.draw.rect(screen, BLACK, [680,5,60,53], 0)
+
+        #This will draw the bottom left sprite box
+        pygame.draw.rect(screen,BLUE,[8,435,65,58],0)
+        pygame.draw.rect(screen,BLACK,[10,437,60,53],0)
+
+        #This will be for the score for player 2 (red).
+        point = score1
+        point1 = str(point)
+        font = pygame.font.SysFont('Calibri', 25, True, False)
+        text = font.render(point1, True, WHITE)
+        screen.blit(text, [30, 10])
+
+        #This will be for the score for player 1 (blue).
+        point = score2
+        point2 = str(point)
+        font = pygame.font.SysFont('Calibri', 25, True, False)
+        text = font.render(point2, True, WHITE)
+        screen.blit(text, [695, 465])
+
         
 score1 = 0
 score2 = 0
