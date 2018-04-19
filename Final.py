@@ -32,6 +32,22 @@ class Block(pygame.sprite.Sprite):
         self.image = pygame.Surface([randint, randint])
         self.image.fill(color)
         self.rect = self.image.get_rect()
+    def reset_pos(self):
+        """ Reset position to the top of the screen, at a random x location.
+        Called by update() or the main program loop if there is a collision.
+        """
+        self.rect.y = random.randrange(130, 600)
+        self.rect.x = random.randrange(60, 420)
+ 
+    def update(self):
+        """ Called each frame. """
+ 
+        # Move block down one pixel
+        self.rect.y += 1
+ 
+        # If block is too far down, reset to top of screen.
+        if self.rect.y > 410:
+            self.reset_pos()
         
 class Paddle(pygame.sprite.Sprite): # paddle class
     # Constructor function
@@ -400,12 +416,12 @@ while not exit_game:
         game_ball.reset()
         
     for block in block_list:
-        if pygame.sprite.spritecollide(block, balls, False):    
-            block_list.remove(block)
-            all_sprites_list.remove(block)
         if pygame.sprite.spritecollide(block, balls, False):
             diff = (player_two.rect.x + player_two.height / 2) - (game_ball.rect.x + game_ball.height / 2)
             game_ball.bounce(diff)
+        if pygame.sprite.spritecollide(block, balls, False):    
+           block.reset_pos()
+           
         
     #This will change the color of the health bar.
     if border.health1 < 250:
