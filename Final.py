@@ -160,22 +160,6 @@ class Ball(pygame.sprite.Sprite): # ball class
         # Move the image to where our x and y are
         self.rect.x = self.x
         self.rect.y = self.y
- 
-        # Do we bounce off the left of the screen?
-        #if self.x <= 0:
-         #   self.direction = (360-self.direction) % 360
- 
-        # Do we bounce of the right side of the screen?
-        #if self.x > self.screenwidth - self.width:
-         #   self.direction = (360-self.direction) % 360
-
-        # Do we bounce of the top of the screen?
-        #if self.y <= 0:
-          #  self.direction = (360 - self.direction) % 360
-            
-        # Do we bounce of the bottom of the screen?
-        #if self.y > self.height - self.screenheight:
-         #   self.direction = (360 - self.direction) % 360
             
 class Wall(pygame.sprite.Sprite): # draws the walls
     # Constructor function
@@ -186,13 +170,9 @@ class Wall(pygame.sprite.Sprite): # draws the walls
         self.health1 = 550
         
         self.health2= 550
+        
         #These values change the health values.
         self.health_damage = 0
-
-        #These values assign the health to the health bar.
-        #self.haelth_change = 
-
-        #self.health1 = self.health_change
 
         #This assigns the color for player 1 (red).
         self.color = GREEN
@@ -222,7 +202,6 @@ class Wall(pygame.sprite.Sprite): # draws the walls
         
         self.health2 -= num
         
-        
     def draw(self, screen):
         # Top Wall
         pygame.draw.polygon(screen, WHITE, [[0, 0], [750, 0], [750, 100], [700, 100], [650, 50], [100, 50], [50, 100], [0 , 100]])
@@ -240,11 +219,11 @@ class Wall(pygame.sprite.Sprite): # draws the walls
         #==========vvvvHealth Barsvvvv=====================
 
         #This will draw the health bar for blue.
-        pygame.draw.rect(screen, GREEN, [100,458,self.health1,35], 0)
+        pygame.draw.rect(screen, self.color  , [100,458,   self.health1    ,35], 0)
 
 
         #This will draw the health bar for red.
-        pygame.draw.rect(screen, GREEN, [100,5,550,35], 0)
+        pygame.draw.rect(screen, self.color2, [100,5,self.health2,35], 0)
 
         #==========^^^^Health Bars^^^^=====================            
         
@@ -415,13 +394,13 @@ while not exit_game:
     # If the ball goes beyond the screen on the right.
     if game_ball.x > 725 and game_ball.y > 100 and game_ball.y < 380:
         score2 += 1
-        border.self_health -= 30
-        game_ball.reset
+        border.health_change(50)
+        game_ball.reset()
 
     #If the ball goes beyond the screen on the left. 
     if game_ball.x < 5 and game_ball.y > 100 and game_ball.y < 380:
         score1 += 1
-        border.self_health -= 30
+        border.health2_change(50)
         game_ball.reset()
         
     for block in block_list:
