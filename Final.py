@@ -1,5 +1,5 @@
 # Ben Weidner, Ryan Miller, Mitch Merkowsky
-# 4/11/2018
+# 4/20/2018
 # PONG+PLUS
 
 import pygame
@@ -166,6 +166,7 @@ class Wall(pygame.sprite.Sprite): # draws the walls
     def __init__(self):
         # Call the parent's constructor
         super().__init__()
+        
         #These values set how much health the players have.
         self.health1 = 550
         
@@ -203,11 +204,6 @@ class Wall(pygame.sprite.Sprite): # draws the walls
         self.health2 -= num
         
     def draw(self, screen):
-        # Top Wall
-        pygame.draw.polygon(screen, WHITE, [[0, 0], [750, 0], [750, 100], [700, 100], [650, 50], [100, 50], [50, 100], [0 , 100]])
-        # Bottom Wall
-        pygame.draw.polygon(screen, WHITE, [[0, 500], [750, 500], [750, 400], [700, 400], [650, 450], [100, 450], [50, 400], [0 , 400]])
-
         #This draws the top health bar.
         pygame.draw.rect(screen, RED, [97,3,556,40], 0)
         pygame.draw.rect(screen, BLACK, [100,5,550,35], 0)
@@ -267,6 +263,21 @@ class Wall(pygame.sprite.Sprite): # draws the walls
         text = font.render(point2, True, WHITE)
         screen.blit(text, [695, 465])
 
+class Border(pygame.sprite.Sprite):
+    def __init__(self, w, h, x_pos, y_pos):
+        # Call the parent's constructor
+        super().__init__()
+        # set the wall sprite
+        self.width = w
+        self.height = h
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(WHITE)
+        self.rect = self.image.get_rect()
+        self.rect.y = y_pos
+        self.rect.x = x_pos
+
+        
+
         
 score1 = 0
 score2 = 0
@@ -282,9 +293,6 @@ for i in range(3):
     # Add the block to the list of objects
     block_list.add(block)
     all_sprites_list.add(block)
-pygame.init()
-
-
 pygame.init()
 
 # Set the width and height of the screen [width, height]
@@ -319,7 +327,23 @@ player_one_change = 0
 player_two_change = 0
 
 # Instances of the Wall class
-border = Wall()
+wall = Wall()
+
+# Instances of the Border Class
+border_top = Border(750, 50, 0, 0)
+border_bot = Border(750, 50, 0, 450)
+border_top_left = Border(75, 50, 0, 50)
+border_top_right = Border(75, 50, 675, 50)
+border_bot_left = Border(75, 50, 0, 400)
+border_bot_right = Border(75, 50, 675, 400)
+
+bordersprites = pygame.sprite.Group()
+bordersprites.add(border_top)
+bordersprites.add(border_bot)
+bordersprites.add(border_top_left)
+bordersprites.add(border_bot_left)
+bordersprites.add(border_top_right)
+bordersprites.add(border_bot_right)
 
 
 # -------- Main Program Loop -----------
@@ -368,7 +392,8 @@ while not exit_game:
     # Set the screen's background
     screen.fill(BLACK)
 
-    border.draw(screen)
+    bordersprites.draw(screen)
+    wall.draw(screen)
 
     if not done:
         # Update the player and ball positions
@@ -376,31 +401,65 @@ while not exit_game:
         player_two.update(player_two_change)
         game_ball.update()
 
+    # If the ball hits the top border
+    if pygame.sprite.spritecollide(border_top, balls, False):
+        diff = (border_top.rect.x + border_top.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+ 
+        game_ball.bounce(diff)
+
+    # If the ball hits the bottom border
+    elif pygame.sprite.spritecollide(border_bot, balls, False):
+        diff = (border_bot.rect.x + border_bot.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+ 
+        game_ball.bounce(diff)
+
+    # If the ball hits the top left/right border
+    elif pygame.sprite.spritecollide(border_top_left, balls, False):
+        diff = (border_top_left.rect.x + border_top_right.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+ 
+        game_ball.bounce(diff)
+
+    elif pygame.sprite.spritecollide(border_top_right, balls, False):
+        diff = (border_top_right.rect.x + border_top_right.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+ 
+        game_ball.bounce(diff)
+
+    # If the ball hits the bottom left/right border
+    elif pygame.sprite.spritecollide(border_bot_left, balls, False):
+        diff = (border_bot_left.rect.x + border_bot_left.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+ 
+        game_ball.bounce(diff)
+
+    elif pygame.sprite.spritecollide(border_bot_right, balls, False):
+        diff = (border_bot_right.rect.x + border_bot_right.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+ 
+        game_ball.bounce(diff)
+        
 
     # See if the ball hits the player one paddle
     if pygame.sprite.spritecollide(player_one, balls, False):
         diff = (player_one.rect.x + player_one.height / 2) - (game_ball.rect.x + game_ball.height / 2)
  
         game_ball.bounce(diff)
-        score1 += 1
+        score2 += 1
  
     # See if the ball hits the player two paddle
     if pygame.sprite.spritecollide(player_two, balls, False):
         diff = (player_two.rect.x + player_two.height / 2) - (game_ball.rect.x + game_ball.height / 2)
  
         game_ball.bounce(diff)
-        score2 += 1
+        score1 += 1
     
     # If the ball goes beyond the screen on the right.
     if game_ball.x > 725 and game_ball.y > 100 and game_ball.y < 380:
         score2 += 1
-        border.health_change(50)
+        wall.health_change(50)
         game_ball.reset()
 
     #If the ball goes beyond the screen on the left. 
     if game_ball.x < 5 and game_ball.y > 100 and game_ball.y < 380:
         score1 += 1
-        border.health2_change(50)
+        wall.health2_change(50)
         game_ball.reset()
         
     for block in block_list:
@@ -412,24 +471,24 @@ while not exit_game:
            
         
     #This will change the color of the health bar for player 1 (blue).
-    if border.health1 < 250:
-        border.healthcolor_change()
+    if wall.health1 < 250:
+        wall.healthcolor_change()
 
-    if border.health1 < 150:
-        border.healthcolor_change2()
+    if wall.health1 < 150:
+        wall.healthcolor_change2()
 
-    if border.health1 <= 0:
+    if wall.health1 <= 0:
         break
         
         
   #This will change the color of the health bar for player 1(red).
-    if border.health2 < 250:
-        border.healthcolor_change()
+    if wall.health2 < 250:
+        wall.healthcolor_change()
 
-    if border.health2 < 150:
-        border.healthcolor_change2()
+    if wall.health2 < 150:
+        wallr.healthcolor_change2()
 
-    if border.health2 <= 0:
+    if wall.health2 <= 0:
         break       
     
  
@@ -437,6 +496,7 @@ while not exit_game:
     # Draw Everything
     movingsprites.draw(screen)
     all_sprites_list.draw(screen)
+    
     
     # --- Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
