@@ -432,7 +432,7 @@ while not exit_game:
            block.reset_pos()
            
         
-    #This will change the color of the health bar.
+    #This will change the color of the health bar for player 1 (blue).
     if border.health1 < 250:
         border.healthcolor_change()
 
@@ -441,6 +441,18 @@ while not exit_game:
 
     if border.health1 <= 0:
         break
+        
+        
+  #This will change the color of the health bar for player 1(red).
+    if border.health2 < 250:
+        border.healthcolor_change()
+
+    if border.health2 < 150:
+        border.healthcolor_change2()
+
+    if border.health2 <= 0:
+        break       
+    
  
     
     # Draw Everything
