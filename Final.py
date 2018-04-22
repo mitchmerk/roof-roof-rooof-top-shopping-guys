@@ -270,13 +270,6 @@ class Wall(pygame.sprite.Sprite): # draws the walls
         font = pygame.font.SysFont('Calibri', 25, True, False)
         text = font.render(point2, True, WHITE)
         screen.blit(text, [695, 465])
-        
-        #A marker.
-        #top
-        #pygame.draw.rect(screen, BLUE  , [0,455,750,50], 0)
-        #bottom
-        #pygame.draw.rect(screen, BLUE  , [0,450,750,50], 0)
-        #pygame.draw.rect(screen, BLUE  , [75,50,599,400], 0)
 
 class Border(pygame.sprite.Sprite):
     def __init__(self, w, h, x_pos, y_pos):
