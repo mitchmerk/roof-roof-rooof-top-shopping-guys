@@ -138,7 +138,7 @@ class Ball(pygame.sprite.Sprite): # ball class
         self.direction -= diff
  
         # Speed the ball up
-        self.speed *= 1.001
+        self.speed *= 1.01
  
     # Update the position of the ball
     def update(self):
