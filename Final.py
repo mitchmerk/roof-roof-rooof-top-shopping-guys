@@ -458,6 +458,7 @@ def main():
         if wall.health1 < 150:
             wall.healthcolor_change_p1()
 
+        #if player 1 has no health display the game over screen.
         if wall.health1 <= 0:
             #break
             playagain = True
@@ -469,7 +470,7 @@ def main():
                 screen.blit(myimage, imagerect)
                 pygame.display.flip()
 
-                '''
+                
                 uInput = input("Play again?")
                 try:
                     if uInput.lower() == "y":
@@ -478,14 +479,15 @@ def main():
                         pygame.quit()
                 except:
                     print("Letters only")
+                
                 '''
-
+                #My attempt at the (Y/N)
                 if event.type == pygame.KEYDOWN:
                     # Figure out if it was an arrow key. If so
                     # adjust speed.
                     if event.key == pygame.K_y:
                         main()
-                '''
+                
                 for event in pygame.event.get():
                     if event.type == KEYDOWN:
                         if event.key == pygame.K_y:
@@ -502,6 +504,7 @@ def main():
         if wall.health2 < 150:
             wall.healthcolor_change_p2()
 
+        #If player 2 has no health. Display game over.
         if wall.health2 <= 0:
             playagain = True
             while playagain == True:
@@ -511,7 +514,9 @@ def main():
                 screen.fill(BLACK)
                 screen.blit(myimage, imagerect)
                 pygame.display.flip()
-                '''
+                
+                
+                #This is the continue prompt.
                 uInput = input("Play again?")
                 try:
                     if uInput.lower() == "y":
@@ -520,14 +525,15 @@ def main():
                         pygame.quit()
                 except:
                     print("Letters only")
+
+                 
                 '''
-                
+                #I tried the (Y/N) thing.
                 for event in pygame.event.get():
                     if event.type == KEYDOWN:
                         if event.key == pygame.k_y:
                             main()
-                    #else:
-                     #   pygame.quit()
+                '''
                 
             screen.fill(BLACK)
      
