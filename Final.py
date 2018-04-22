@@ -1,5 +1,5 @@
 # Ben Weidner, Ryan Miller, Mitch Merkowsky
-# 4/22/2018
+# 4/20/2018
 # PONG+PLUS
 
 import pygame
@@ -133,12 +133,9 @@ class Ball(pygame.sprite.Sprite): # ball class
             self.y = 50
  
     # This function will bounce the ball off a horizontal surface (not a vertical one)
-    def bounce(self, diff):
-        self.direction = self.direction % 360
+    def bounce(self,diff):
+        self.direction = (90 - self.direction) % 360
         self.direction -= diff
- 
-        # Speed the ball up
-        self.speed *= 1.001
  
     # Update the position of the ball
     def update(self):
@@ -148,10 +145,10 @@ class Ball(pygame.sprite.Sprite): # ball class
         # Change the position (x and y) according to the speed and direction
         self.x += self.speed * math.sin(direction_radians)
         self.y -= self.speed * math.cos(direction_radians)
-
-        if self.y < 45:
+ 
+        if self.y < 0:
             self.reset()
-
+ 
         if self.y > 455:
             self.reset()
  
@@ -283,206 +280,299 @@ class Border(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.y = y_pos
         self.rect.x = x_pos
+
+#This is the main program loop. Its so we can loop back to the begining after the game is over.
+def main():
+
+    #This draws the obstacles.
+    all_sprites_list = pygame.sprite.Group()
+    block_list = pygame.sprite.Group()
+    for i in range(3):
+        # This represents a block
+        block = Block(GREEN)
+        # Set a random location for the block
+        block.rect.x = random.randrange(475)
+        block.rect.y = random.randrange(550)
+        # Add the block to the list of objects
+        block_list.add(block)
+        all_sprites_list.add(block)
         
-score1 = 0
-score2 = 0
+    pygame.init()
 
-#This draws the obstacles.
-all_sprites_list = pygame.sprite.Group()
-block_list = pygame.sprite.Group()
-for i in range(3):
-    # This represents a block
-    block = Block(GREEN)
-    # Set a random location for the block
-    block.rect.x = random.randrange(475)
-    block.rect.y = random.randrange(550)
-    # Add the block to the list of objects
-    block_list.add(block)
-    all_sprites_list.add(block)
-    
-pygame.init()
+    # Set the width and height of the screen [width, height]
+    size = (750, 500)
+    screen = pygame.display.set_mode(size)
+     
+    pygame.display.set_caption("PONG+PLUS")
+     
+    # Loop until the user clicks the close button.
+    exit_game = False
+    done = False
+     
+    # Used to manage how fast the screen updates
+    clock = pygame.time.Clock()
 
-# Set the width and height of the screen [width, height]
-size = (750, 500)
-screen = pygame.display.set_mode(size)
- 
-pygame.display.set_caption("PONG+PLUS")
- 
-# Loop until the user clicks the close button.
-exit_game = False
-done = False
- 
-# Used to manage how fast the screen updates
-clock = pygame.time.Clock()
+    # Instances of the Ball class
+    game_ball = Ball()
 
-# Instances of the Ball class
-game_ball = Ball()
+    balls = pygame.sprite.Group()
+    balls.add(game_ball)
 
-balls = pygame.sprite.Group()
-balls.add(game_ball)
+    # Instances of the Paddle class
+    player_one = Paddle(35, 225, BLUE)
+    player_two = Paddle(700, 225, RED)
 
-# Instances of the Paddle class
-player_one = Paddle(35, 225, BLUE)
-player_two = Paddle(700, 225, RED)
+    movingsprites = pygame.sprite.Group()
+    movingsprites.add(player_one)
+    movingsprites.add(player_two)
+    movingsprites.add(game_ball)
 
-movingsprites = pygame.sprite.Group()
-movingsprites.add(player_one)
-movingsprites.add(player_two)
-movingsprites.add(game_ball)
+    player_one_change = 0
+    player_two_change = 0
 
-player_one_change = 0
-player_two_change = 0
+    # Instances of the Wall class
+    wall = Wall()
 
-# Instances of the Wall class
-wall = Wall()
-
-# Instances of the Border Class
-border_top = Border(750, 50, 0, 0)
-border_bot = Border(750, 50, 0, 450)
-border_top_left = Border(75, 50, 0, 50)
-border_top_right = Border(75, 50, 675, 50)
-border_bot_left = Border(75, 50, 0, 400)
-border_bot_right = Border(75, 50, 675, 400)
-
-bordersprites = pygame.sprite.Group()
-bordersprites.add(border_top)
-bordersprites.add(border_bot)
-bordersprites.add(border_top_left)
-bordersprites.add(border_bot_left)
-bordersprites.add(border_top_right)
-bordersprites.add(border_bot_right)
+    # Instances of the Border Class
+    border_top = Border(750, 50, 0, 0)
+    border_bot = Border(750, 50, 0, 450)
+    border_top_left = Border(75, 50, 0, 50)
+    border_top_right = Border(75, 50, 675, 50)
+    border_bot_left = Border(75, 50, 0, 400)
+    border_bot_right = Border(75, 50, 675, 400)
 
 
-# -------- Main Program Loop -----------
-while not exit_game:
-    # --- Main event loop
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            exit_program = True
+    bordersprites = pygame.sprite.Group()
+    bordersprites.add(border_top)
+    bordersprites.add(border_bot)
+    bordersprites.add(border_top_left)
+    bordersprites.add(border_bot_left)
+    bordersprites.add(border_top_right)
+    bordersprites.add(border_bot_right)
 
-        # PLAYER ONE CONTROLS
-        # Set the speed based on the key pressed
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_w:
-                player_one_change = -1
-            elif event.key == pygame.K_s:
-                player_one_change = 1
- 
-        # Reset speed when key goes up
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_w:
-               player_one_change = 0
-            elif event.key == pygame.K_s:
-                player_one_change = 0
+    # -------- Main Program Loop -----------
+    while not exit_game:
+        # --- Main event loop
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit_program = True
+
+            # PLAYER ONE CONTROLS
+            # Set the speed based on the key pressed
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w:
+                    player_one_change = -1
+                elif event.key == pygame.K_s:
+                    player_one_change = 1
+     
+            # Reset speed when key goes up
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_w:
+                   player_one_change = 0
+                elif event.key == pygame.K_s:
+                    player_one_change = 0
+                    
+            # PLAYER TWO CONTROLS
+            # Set the speed based on the key pressed
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    player_two_change = -1
+                elif event.key == pygame.K_DOWN:
+                    player_two_change = 1
+     
+            # Reset speed when key goes up
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_UP:
+                    player_two_change = 0
+                elif event.key == pygame.K_DOWN:
+                    player_two_change = 0
+     
+        # --- Screen-clearing code goes here
+        screen.fill(WHITE)
+        
+        # Here, we clear the screen to white. Don't put other drawing commands
+        # above this, or they will be erased with this command.
+     
+        # Set the screen's background
+        screen.fill(BLACK)
+        
+        bordersprites.draw(screen)
+        wall.draw(screen)
+
+        if not done:
+            # Update the player and ball positions
+            player_one.update(player_one_change)
+            player_two.update(player_two_change)
+            game_ball.update()
+
+        # If the ball hits the top border
+        if pygame.sprite.spritecollide(border_top, balls, False):
+            diff = (border_top.rect.x + border_top.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+     
+            game_ball.bounce(diff)
+
+        # If the ball hits the bottom border
+        elif pygame.sprite.spritecollide(border_bot, balls, False):
+            diff = (border_bot.rect.x + border_bot.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+     
+            game_ball.bounce(diff)
+
+        # If the ball hits the top left/right border
+        elif pygame.sprite.spritecollide(border_top_left, balls, False):
+            diff = (border_top_left.rect.x + border_top_right.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+     
+            game_ball.bounce(diff)
+
+        elif pygame.sprite.spritecollide(border_top_right, balls, False):
+            diff = (border_top_right.rect.x + border_top_right.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+     
+            game_ball.bounce(diff)
+
+        # If the ball hits the bottom left/right border
+        elif pygame.sprite.spritecollide(border_bot_left, balls, False):
+            diff = (border_bot_left.rect.x + border_bot_left.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+     
+            game_ball.bounce(diff)
+
+        elif pygame.sprite.spritecollide(border_bot_right, balls, False):
+            diff = (border_bot_right.rect.x + border_bot_right.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+     
+            game_ball.bounce(diff)
+            
+
+        # See if the ball hits the player one paddle
+        if pygame.sprite.spritecollide(player_one, balls, False):
+            diff = (player_one.rect.x + player_one.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+            game_ball.bounce(diff)
+            wall.paddle_last_hit == True
+            wall.score_change_p1(5)
+     
+        # See if the ball hits the player two paddle
+        if pygame.sprite.spritecollide(player_two, balls, False):
+            diff = (player_two.rect.x + player_two.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+            game_ball.bounce(diff)
+            wall.paddle_last_hit == False
+            wall.score_change_p2(5)
+        
+        # If the ball goes beyond the paddle on the right.
+        if game_ball.x > 725 and game_ball.y > 100 and game_ball.y < 380:
+            wall.score_change_p1(20)
+            wall.health2_change(550)
+            game_ball.reset()
+
+        #If the ball goes beyond the paddle on the left. 
+        if game_ball.x < 5 and game_ball.y > 100 and game_ball.y < 380:
+            wall.score_change_p2(20)
+            wall.health1_change(450)
+            game_ball.reset()
+
+        #This deals with the blocks.
+        for block in block_list:
+            if pygame.sprite.spritecollide(block, balls, False):
+                if wall.paddle_last_hit == True:
+                    wall.score_change_p2(50)
+                if wall.paddle_last_hit == False:
+                    wall.score_change_p1(50)
+                diff = (player_two.rect.x + player_two.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+                game_ball.bounce(diff)
+            if pygame.sprite.spritecollide(block, balls, False):
+                block.reset_pos()
+               
+        #This will change the color of the health bar for player 1 blue.
+        if wall.health1 < 250:
+            wall.healthcolor_change_p1()
+
+        if wall.health1 < 150:
+            wall.healthcolor_change_p1()
+
+        if wall.health1 <= 0:
+            #break
+            playagain = True
+            while playagain == True:
+                myimage = pygame.image.load("Red_Win.jpg")
+                imagerect = myimage.get_rect()
                 
-        # PLAYER TWO CONTROLS
-        # Set the speed based on the key pressed
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                player_two_change = -1
-            elif event.key == pygame.K_DOWN:
-                player_two_change = 1
- 
-        # Reset speed when key goes up
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_UP:
-                player_two_change = 0
-            elif event.key == pygame.K_DOWN:
-                player_two_change = 0
- 
-    # --- Screen-clearing code goes here
-    screen.fill(WHITE)
-    
-    # Here, we clear the screen to white. Don't put other drawing commands
-    # above this, or they will be erased with this command.
- 
-    # Set the screen's background
-    screen.fill(BLACK)
-    
-    bordersprites.draw(screen)
-    wall.draw(screen)
+                screen.fill(BLACK)
+                screen.blit(myimage, imagerect)
+                pygame.display.flip()
 
-    if not done:
-        # Update the player and ball positions
-        player_one.update(player_one_change)
-        player_two.update(player_two_change)
-        game_ball.update()
+                '''
+                uInput = input("Play again?")
+                try:
+                    if uInput.lower() == "y":
+                        main()
+                    if uInput.lower() == "n":
+                        pygame.quit()
+                except:
+                    print("Letters only")
+                '''
 
-    # See if the ball hits the borders
-    for boundary in bordersprites:
-        if pygame.sprite.spritecollide(boundary, balls, False):
-            diff = (boundary.rect.x + boundary.height * 2) - (game_ball.rect.x + game_ball.height * 2)
-            game_ball.bounce(diff)
+                if event.type == pygame.KEYDOWN:
+                    # Figure out if it was an arrow key. If so
+                    # adjust speed.
+                    if event.key == pygame.K_y:
+                        main()
+                '''
+                for event in pygame.event.get():
+                    if event.type == KEYDOWN:
+                        if event.key == pygame.K_y:
+                            main()
+                        if event.key == pygame.K_n:
+                            pygame.quit()
+                '''
+            screen.fill(BLACK)
+            
+      #This will change the color of the health bar for player 2 red.
+        if wall.health2 < 250:
+            wall.healthcolor_change_p2()
 
-    # See if the ball hits the player one paddle
-    if pygame.sprite.spritecollide(player_one, balls, False):
-        diff = (player_one.rect.x + player_one.height * 2) - (game_ball.rect.x + game_ball.height * 2)
-        game_ball.bounce(diff)
-        wall.paddle_last_hit == True
-        wall.score_change_p1(5)
- 
-    # See if the ball hits the player two paddle
-    if pygame.sprite.spritecollide(player_two, balls, False):
-        diff = (player_two.rect.x + player_two.height / 2) - (game_ball.rect.x + game_ball.height / 2)
-        game_ball.bounce(diff)
-        wall.paddle_last_hit == False
-        wall.score_change_p2(5)
-    
-    # If the ball goes beyond the paddle on the right.
-    if game_ball.x > 750:
-        wall.score_change_p1(20)
-        wall.health2_change(50)
-        game_ball.reset()
+        if wall.health2 < 150:
+            wall.healthcolor_change_p2()
 
-    #If the ball goes beyond the paddle on the left. 
-    if game_ball.x < 0:
-        wall.score_change_p2(20)
-        wall.health1_change(50)
-        game_ball.reset()
-
-    #This deals with the blocks.
-    for block in block_list:
-        if pygame.sprite.spritecollide(block, balls, False):
-            if wall.paddle_last_hit == True:
-                wall.score_change_p2(50)
-            if wall.paddle_last_hit == False:
-                wall.score_change_p1(50)
-            diff = (block.rect.x + block.rect.y / 2) - (game_ball.rect.x + game_ball.height / 2)
-            game_ball.bounce(diff)
-        if pygame.sprite.spritecollide(block, balls, False):
-            block.reset_pos()
-           
-    #This will change the color of the health bar for player 1 blue.
-    if wall.health1 < 250:
-        wall.healthcolor_change_p1()
-
-    if wall.health1 < 150:
-        wall.healthcolor_change_p1()
-
-    if wall.health1 <= 0:
-        break
+        if wall.health2 <= 0:
+            playagain = True
+            while playagain == True:
+                myimage = pygame.image.load("Blue_Win.jpg")
+                imagerect = myimage.get_rect()
+                
+                screen.fill(BLACK)
+                screen.blit(myimage, imagerect)
+                pygame.display.flip()
+                '''
+                uInput = input("Play again?")
+                try:
+                    if uInput.lower() == "y":
+                        main()
+                    if uInput.lower() == "n":
+                        pygame.quit()
+                except:
+                    print("Letters only")
+                '''
+                
+                for event in pygame.event.get():
+                    if event.type == KEYDOWN:
+                        if event.key == pygame.k_y:
+                            main()
+                    #else:
+                     #   pygame.quit()
+                
+            screen.fill(BLACK)
+     
         
-  #This will change the color of the health bar for player 2 red.
-    if wall.health2 < 250:
-        wall.healthcolor_change_p2()
+        # Draw Everything
+        movingsprites.draw(screen)
+        all_sprites_list.draw(screen)
+        
+        
+        # --- Go ahead and update the screen with what we've drawn.
+        pygame.display.flip()
+     
+        # --- Limit to 60 frames per second
+        clock.tick(60)
 
-    if wall.health2 < 150:
-        wall.healthcolor_change_p2()
+#Calls the main program.
+if __name__ == "__main__":
+    main()
 
-    if wall.health2 <= 0:
-        break
- 
-    
-    # Draw Everything
-    movingsprites.draw(screen)
-    all_sprites_list.draw(screen)
-    
-    
-    # --- Go ahead and update the screen with what we've drawn.
-    pygame.display.flip()
- 
-    # --- Limit to 60 frames per second
-    clock.tick(60)
- 
 # Close the window and quit.
 pygame.quit()
