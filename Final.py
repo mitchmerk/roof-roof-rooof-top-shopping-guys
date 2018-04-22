@@ -344,13 +344,12 @@ player_two_change = 0
 wall = Wall()
 
 # Instances of the Border Class
-border_top = Border(550, 5, 100, 148)
+border_top = Border(750, 50, 0, 0)
 border_bot = Border(750, 50, 0, 450)
 border_top_left = Border(75, 50, 0, 50)
 border_top_right = Border(75, 50, 675, 50)
-border_bot_left = Border(75, 50, 0, 399)
+border_bot_left = Border(75, 50, 0, 400)
 border_bot_right = Border(75, 50, 675, 400)
-
 
 bordersprites = pygame.sprite.Group()
 bordersprites.add(border_top)
