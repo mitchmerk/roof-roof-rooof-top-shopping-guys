@@ -36,8 +36,8 @@ class Block(pygame.sprite.Sprite):
         """ Reset position to the top of the screen, at a random x location.
         Called by update() or the main program loop if there is a collision.
         """
-        self.rect.y = random.randrange(130, 600)
-        self.rect.x = random.randrange(60, 420)
+        self.rect.y = random.randrange(80, 400)
+        self.rect.x = random.randrange(90, 400)
  
     def update(self):
         """ Called each frame. """
@@ -288,8 +288,8 @@ for i in range(3):
     # This represents a block
     block = Block(GREEN)
     # Set a random location for the block
-    block.rect.x = random.randrange(475)
-    block.rect.y = random.randrange(550)
+    block.rect.x = random.randrange(60, 300)
+    block.rect.y = random.randrange(90, 400)
     # Add the block to the list of objects
     block_list.add(block)
     all_sprites_list.add(block)
@@ -461,6 +461,8 @@ while not exit_game:
         score1 += 1
         wall.health2_change(50)
         game_ball.reset()
+
+    #If the ball hits an obstacle
         
     for block in block_list:
         if pygame.sprite.spritecollide(block, balls, False):
