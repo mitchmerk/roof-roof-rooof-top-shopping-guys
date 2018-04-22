@@ -1,5 +1,5 @@
 # Ben Weidner, Ryan Miller, Mitch Merkowsky
-# 4/20/2018
+# 4/22/2018
 # PONG+PLUS
 
 import pygame
@@ -133,12 +133,12 @@ class Ball(pygame.sprite.Sprite): # ball class
             self.y = 50
  
     # This function will bounce the ball off a horizontal surface (not a vertical one)
-    def bounce(self,diff):
-        self.direction = (90 - self.direction) % 360
+    def bounce(self, diff):
+        self.direction = self.direction % 360
         self.direction -= diff
  
         # Speed the ball up
-        #self.speed *= 2
+        self.speed *= 1.001
  
     # Update the position of the ball
     def update(self):
@@ -148,10 +148,10 @@ class Ball(pygame.sprite.Sprite): # ball class
         # Change the position (x and y) according to the speed and direction
         self.x += self.speed * math.sin(direction_radians)
         self.y -= self.speed * math.cos(direction_radians)
- 
-        if self.y < 0:
+
+        if self.y < 45:
             self.reset()
- 
+
         if self.y > 455:
             self.reset()
  
@@ -408,44 +408,15 @@ while not exit_game:
         player_two.update(player_two_change)
         game_ball.update()
 
-    # If the ball hits the top border
-    if pygame.sprite.spritecollide(border_top, balls, False):
-        diff = (border_top.rect.x + border_top.height / 2) - (game_ball.rect.x + game_ball.height / 2)
- 
-        game_ball.bounce(diff)
-
-    # If the ball hits the bottom border
-    elif pygame.sprite.spritecollide(border_bot, balls, False):
-        diff = (border_bot.rect.x + border_bot.height / 2) - (game_ball.rect.x + game_ball.height / 2)
- 
-        game_ball.bounce(diff)
-
-    # If the ball hits the top left/right border
-    elif pygame.sprite.spritecollide(border_top_left, balls, False):
-        diff = (border_top_left.rect.x + border_top_right.height / 2) - (game_ball.rect.x + game_ball.height / 2)
- 
-        game_ball.bounce(diff)
-
-    elif pygame.sprite.spritecollide(border_top_right, balls, False):
-        diff = (border_top_right.rect.x + border_top_right.height / 2) - (game_ball.rect.x + game_ball.height / 2)
- 
-        game_ball.bounce(diff)
-
-    # If the ball hits the bottom left/right border
-    elif pygame.sprite.spritecollide(border_bot_left, balls, False):
-        diff = (border_bot_left.rect.x + border_bot_left.height / 2) - (game_ball.rect.x + game_ball.height / 2)
- 
-        game_ball.bounce(diff)
-
-    elif pygame.sprite.spritecollide(border_bot_right, balls, False):
-        diff = (border_bot_right.rect.x + border_bot_right.height / 2) - (game_ball.rect.x + game_ball.height / 2)
- 
-        game_ball.bounce(diff)
-        
+    # See if the ball hits the borders
+    for boundary in bordersprites:
+        if pygame.sprite.spritecollide(boundary, balls, False):
+            diff = (boundary.rect.x + boundary.height * 2) - (game_ball.rect.x + game_ball.height * 2)
+            game_ball.bounce(diff)
 
     # See if the ball hits the player one paddle
     if pygame.sprite.spritecollide(player_one, balls, False):
-        diff = (player_one.rect.x + player_one.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+        diff = (player_one.rect.x + player_one.height * 2) - (game_ball.rect.x + game_ball.height * 2)
         game_ball.bounce(diff)
         wall.paddle_last_hit == True
         wall.score_change_p1(5)
@@ -455,17 +426,16 @@ while not exit_game:
         diff = (player_two.rect.x + player_two.height / 2) - (game_ball.rect.x + game_ball.height / 2)
         game_ball.bounce(diff)
         wall.paddle_last_hit == False
-        wall.score_change_p1(5)
+        wall.score_change_p2(5)
     
     # If the ball goes beyond the paddle on the right.
-    if game_ball.x > 725 and game_ball.y > 100 and game_ball.y < 380:
+    if game_ball.x > 750:
         wall.score_change_p1(20)
         wall.health2_change(50)
         game_ball.reset()
 
     #If the ball goes beyond the paddle on the left. 
-    if game_ball.x < 5 and game_ball.y > 100 and game_ball.y < 380:
-        score1 += 1
+    if game_ball.x < 0:
         wall.score_change_p2(20)
         wall.health1_change(50)
         game_ball.reset()
@@ -477,7 +447,7 @@ while not exit_game:
                 wall.score_change_p2(50)
             if wall.paddle_last_hit == False:
                 wall.score_change_p1(50)
-            diff = (player_two.rect.x + player_two.height / 2) - (game_ball.rect.x + game_ball.height / 2)
+            diff = (block.rect.x + block.rect.y / 2) - (game_ball.rect.x + game_ball.height / 2)
             game_ball.bounce(diff)
         if pygame.sprite.spritecollide(block, balls, False):
             block.reset_pos()
